@@ -1,0 +1,30 @@
+! BigTopo
+! OOE-POP-3
+
+en
+conf t
+hostname OOE-POP-3
+no ip domain lookup
+service password-encr
+
+
+ip domain name BigTopo
+ip ssh version 2
+crypto key gen rsa usage-k mod 2048
+
+username cisco priv 15
+username cisco algorithm-type scrypt secret cisco
+
+line vty 0 97
+login local
+logging sync
+exec-timeout 0 0
+transport input ssh telnet
+exit
+
+
+interface gig0/0
+description Connection to STM-POP-4
+ip address 172.16.9.2 255.255.255.0
+no shutdown
+exit

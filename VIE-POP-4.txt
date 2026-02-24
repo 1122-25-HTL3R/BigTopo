@@ -1,0 +1,30 @@
+! BigTopo
+! VIE-POP-4
+
+en
+conf t
+hostname VIE-POP-4
+no ip domain lookup
+service password-encr
+
+
+ip domain name BigTopo
+ip ssh version 2
+crypto key gen rsa usage-k mod 2048
+
+username cisco priv 15
+username cisco algorithm-type scrypt secret cisco
+
+line vty 0 97
+login local
+logging sync
+exec-timeout 0 0
+transport input ssh telnet
+exit
+
+
+interface gig0/0
+description Connection to STM-POP-1
+ip address 172.16.3.1 255.255.255.0
+no shutdown
+exit
