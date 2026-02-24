@@ -25,29 +25,33 @@ exit
 
 
 interface gig0/0
-description Connection to SZB-R-1
-ip address 10.8.0.2 255.255.255.252
-no shutdown
+	description Connection to SZB-R-1
+	ip address 10.8.0.2 255.255.255.252
+	no mpls ip
+	no shutdown
 
 interface gig0/2
-description Connection to SZB-R-3
-ip address 10.8.0.9 255.255.255.252
-no shutdown
+	description Connection to SZB-R-3
+	ip address 10.8.0.9 255.255.255.252
+	no mpls ip
+	no shutdown
 
 interface gig0/1
-description Connection to STM-POP-3
-ip address 10.7.0.9 255.255.255.252
-no shutdown
+	description Connection to STM-POP-3
+	ip address 10.7.0.9 255.255.255.252
+	no mpls ip
+	no shutdown
 
 
 interface gig0/3
-description Connection to STM-POP-4
-ip address 10.7.0.13 255.255.255.252
-no shutdown
+	description Connection to STM-POP-4
+	ip address 10.7.0.13 255.255.255.252
+	no mpls ip
+	no shutdown
 
 interface lo0
-Loopback interface of SZB-R-2
-ip address 10.7.7.2 255.255.0.0
+	description Loopback interface of SZB-R-2
+	ip address 10.8.8.2 255.255.255.255
 exit
 
 
@@ -55,6 +59,7 @@ router ospf 1
 	router-id 10.8.8.2
 	network 10.8.0.0 0.0.0.3 area 1
 	network 10.8.0.8 0.0.0.3 area 1
+	network 10.8.8.2 0.0.0.0 area 1
 	passive-interface default
 	no passive-interface g0/0
 	no passive-interface g0/2

@@ -60,7 +60,7 @@ do show clns neigh
 ! Hub 1
 int tun 100
 	ip addr 192.168.100.1 255.255.255.0
-	tun source g0/2
+	tun source lo0
 	tun mode gre multipoint
 
 	ip nhrp authentication DMVPN
@@ -71,3 +71,105 @@ int tun 100
 	
 	# later!!! tun protection ipsec profile DMVPN
 exit
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+! Ab hier jeweils ncoh nicht geconft weil ka tbh ob das so ok ist
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+router ospf 100
+    network 192.168.100.0 0.0.0.255 area 0   ! Tunnel-Netz
+    network 10.7.7.1 0.0.0.0 area 0          ! eigene Loopback
+exit
+
+
+! --- MPLS ---
+
+int tun 100
+	mpls ip
+exit
+
+
+! STM-POP-1:
+ip vrf PUBLIC
+    rd 65007:100
+    route-target export 65007:100
+    route-target import 65007:100
+exit
+
+int g0/0 		! 172.16.3.2 → VIE-POP-4
+    ip vrf forwarding PUBLIC
+    ip address 172.16.3.2 255.255.255.0
+	no shutdown
+exit
+
+
+! -- VRFs --
+
+mpls ldp router-id Loopback0 force
+
+int tun 100
+    mpls ip
+exit
+
+
+ip vrf VIE
+    rd 65007:10
+    route-target export 65007:10
+    route-target import 65007:10
+exit
+
+ip vrf OOE
+    rd 65007:20
+    route-target export 65007:20
+    route-target import 65007:20
+exit
+
+ip vrf ZWG
+    rd 65007:30
+    route-target export 65007:30
+    route-target import 65007:30
+exit
+
+
+int g0/0
+    ip vrf forwarding VIE
+    ip address 172.16.3.2 255.255.255.0
+    no shutdown
+exit
+
+
+! --- BGP ---
+
+router bgp 65007
+    bgp router-id 10.7.7.1
+    no bgp default ipv4-unicast
+
+    ! iBGP PE-PE zu allen anderen STM-POP:
+    neighbor 10.7.7.2 remote-as 65007
+    neighbor 10.7.7.2 update-source lo0
+    neighbor 10.7.7.3 remote-as 65007
+    neighbor 10.7.7.3 update-source lo0
+    neighbor 10.7.7.4 remote-as 65007
+    neighbor 10.7.7.4 update-source lo0
+    neighbor 10.7.7.5 remote-as 65007
+    neighbor 10.7.7.5 update-source lo0
+
+    address-family vpnv4
+        neighbor 10.7.7.2 activate
+        neighbor 10.7.7.2 send-community extended
+        neighbor 10.7.7.3 activate
+        neighbor 10.7.7.3 send-community extended
+        neighbor 10.7.7.4 activate
+        neighbor 10.7.7.4 send-community extended
+        neighbor 10.7.7.5 activate
+        neighbor 10.7.7.5 send-community extended
+    exit-address-family
+
+    ! eBGP PE-CE zu VIE-POP-4:
+    address-family ipv4 vrf VIE
+        neighbor 172.16.3.1 remote-as 65010
+        neighbor 172.16.3.1 activate
+    exit-address-family
+exit
+
+
