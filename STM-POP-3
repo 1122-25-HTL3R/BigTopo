@@ -54,3 +54,28 @@ router isis
 	net 49.0001.0100.0700.7003.00
 exit
 do show clns neigh
+
+
+
+! --- DMVPN ---
+
+! Spoke
+int tun 100
+	ip addr 192.168.100.3 255.255.255.0
+	tun source g0/1
+	tun mode gre multipoint
+	
+	ip nhrp authentication DMVPN
+	ip nhrp network-id 100	
+	
+	ip nhrp map 192.168.0.1 10.7.7.1
+	ip nhrp map multicast 10.7.7.1
+	ip nhrp nhs 192.168.0.1
+	
+    tun destination 10.7.7.1
+
+	ip ospf priority 0
+	ip ospf network point-to-multipoint
+	
+	# later!!! tun protection ipsec profile DMVPN
+exit

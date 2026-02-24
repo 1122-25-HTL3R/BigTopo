@@ -54,6 +54,21 @@ router isis
 exit
 do show clns neigh
 
+! --- DMVPN ---
+! Hub 2
+int tun 100
+	ip addr 192.168.100.2 255.255.255.0
+	tun source g0/3
+	tun mode gre multipoint
+
+	ip nhrp authentication DMVPN
+	ip nhrp network-id 100
+	ip nhrp map multicast dynamic
+	
+	ip ospf network point-to-multipoint	
+	
+	# later!!! tun protection ipsec profile DMVPN
+exit
 
 
 
