@@ -38,3 +38,27 @@ description Connection to SZB-R-2
 ip address 172.16.14.254 255.255.255.0
 no shutdown
 exit
+
+
+
+int lo0
+    ip addr 10.7.7.5 255.255.255.255
+exit
+
+! IS-IS
+router isis
+	passive-interface default
+exit
+int range g0/0
+	ip router isis
+exit
+router isis
+	no passive-interface g0/0
+
+	! lo0 10.7.7.5 -> 010 007 007 005
+	! -> 0100.0700.7005
+	net 49.0001.0100.0700.7005.00
+exit
+do show clns neigh
+
+

@@ -98,3 +98,10 @@ router isis
 	net 49.0001.0100.0800.8001.00
 exit
 
+! Redistribution
+router ospf 1
+	redistribute isis level-1-2
+exit
+router isis
+	redistribute ospf 1
+exit
