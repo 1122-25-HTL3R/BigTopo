@@ -1,0 +1,40 @@
+! BigTopo
+! STM-POP-5
+
+en
+conf t
+hostname STM-POP-5
+no ip domain lookup
+service password-encr
+
+
+ip domain name BigTopo
+ip ssh version 2
+crypto key gen rsa usage-k mod 2048
+
+username cisco priv 15
+username cisco algorithm-type scrypt secret cisco
+
+line vty 0 97
+login local
+logging sync
+exec-timeout 0 0
+transport input ssh telnet
+exit
+
+
+interface gig0/0
+description Connection to SZB-R-3
+ip address 10.7.0.18 255.255.255.252
+no shutdown
+
+interface gig0/1
+description Connection to SZB-R-2
+ip address 172.16.8.1 255.255.255.0
+no shutdown
+
+interface gig0/2
+description Connection to SZB-R-2
+ip address 172.16.14.254 255.255.255.0
+no shutdown
+exit

@@ -1,0 +1,72 @@
+! BigTopo
+! SZB-R-3
+
+en
+conf t
+hostname SZB-R-3
+no ip domain lookup
+service password-encr
+
+
+ip domain name BigTopo
+ip ssh version 2
+crypto key gen rsa usage-k mod 2048
+
+username cisco priv 15
+username cisco algorithm-type scrypt secret cisco
+
+line vty 0 97
+login local
+logging sync
+exec-timeout 0 0
+transport input ssh telnet
+exit
+
+
+interface gig0/1
+description Connection to SZB-R-1
+ip address 10.8.0.6 255.255.255.252
+no shutdown
+
+interface gig0/2
+description Connection to SZB-R-2
+ip address 10.8.0.10 255.255.255.252
+no shutdown
+
+interface gig0/0
+description Connection to STM-POP-5
+ip address 10.7.0.17 255.255.255.252
+no shutdown
+
+interface gig0/3
+description Connection to BRA-FW-1
+ip address 172.16.7.254 255.255.255.0
+no shutdown
+
+interface Loopback0
+	ip address 10.8.8.3 255.255.255.255
+	no shutdown
+exit
+
+router ospf 1
+	router-id 10.8.8.3
+	network 10.8.0.4 0.0.0.3 area 1
+	network 10.8.0.8 0.0.0.3 area 1
+	passive-interface default
+	no passive-interface g0/1
+	no passive-interface g0/2
+exit
+
+! OSPF Authentication
+key chain OSPF-KEY
+	key 1
+		key-string cisco
+		cryptographic-algorithm hmac-sha-512
+	exit
+exit
+
+interface range g0/1-2
+	ip ospf authentication message-digest
+	ip ospf authentication key-chain OSPF-KEY
+	ospfv3 authentication key-chain OSPF-KEY
+exit
