@@ -33,3 +33,23 @@ description Connection to SZB-R-1
 ip address 10.7.0.6 255.255.255.252
 no shutdown
 exit
+
+int lo0
+    ip addr 10.7.7.2 255.255.255.255
+exit
+
+! IS-IS
+router isis
+	passive-interface default
+exit
+int range g0/3
+	ip router isis
+exit
+router isis
+	no passive-interface g0/3
+
+	! lo0 10.7.7.2 -> 010 007 007 002
+	! -> 0100.0700.7002
+	net 49.0001.0100.0700.7002.00
+exit
+do show clns neigh

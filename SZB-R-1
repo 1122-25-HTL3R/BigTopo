@@ -80,3 +80,21 @@ interface range g0/0-1
 	ip ospf authentication key-chain OSPF-KEY
 	ospfv3 authentication key-chain OSPF-KEY
 exit
+
+
+! IS-IS
+router isis
+	passive-interface default
+exit
+int range g0/2-3
+	ip router isis
+exit
+router isis
+	no passive-interface g0/2
+	no passive-interface g0/3
+
+	! lo0 10.8.8.1 -> 010 008 008 001
+	! -> 0100.0800.8001
+	net 49.0001.0100.0800.8001.00
+exit
+
