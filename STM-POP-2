@@ -40,7 +40,7 @@ exit
 
 ! IS-IS
 router isis
-	passive-interface default
+	no passive-interface default
 exit
 int range g0/3
 	ip router isis
@@ -55,23 +55,25 @@ exit
 do show clns neigh
 
 ! --- DMVPN ---
+! wir brauchen auf bieden hubs seperate DMVPN INstanz zu allen 3 Spokes und dann zwischen den hubs..? DOrt dann Phase 1
+
 ! Hub 2
 int tun 100
-	ip addr 192.168.100.2 255.255.255.0
-	tun source lo0
-	tun mode gre multipoint
+	no ip addr 192.168.100.2 255.255.255.0
+	no tun source lo0
+	no tun mode gre multipoint
 
-	ip nhrp authentication DMVPN
-	ip nhrp network-id 100
-	ip nhrp map multicast dynamic
+	no ip nhrp authentication DMVPN
+	no ip nhrp network-id 100
+	no ip nhrp map multicast dynamic
 	
 	! Hub 2 registriert sich bei Hub 1:
-	ip nhrp map 192.168.100.1 10.7.7.1
-	ip nhrp map multicast 10.7.7.1
-	ip nhrp nhs 192.168.100.1
+	no ip nhrp map 192.168.100.1 10.7.7.1
+	no ip nhrp map multicast 10.7.7.1
+	no ip nhrp nhs 192.168.100.1
 	
 
-	ip ospf network point-to-multipoint	
+	no ip ospf network point-to-multipoint	
 	
 	# later!!! tun protection ipsec profile DMVPN
 exit

@@ -86,7 +86,7 @@ exit
 
 ! IS-IS
 router isis
-	passive-interface default
+	no passive-interface default
 exit
 int range g0/2-3
 	ip router isis
@@ -102,7 +102,7 @@ exit
 
 ! Redistribution
 router ospf 1
-	redistribute isis level-1-2
+	redistribute isis level-1-2 subnets
 exit
 router isis
 	redistribute ospf 1

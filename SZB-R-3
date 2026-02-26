@@ -74,7 +74,7 @@ exit
 
 ! IS-IS
 router isis
-	passive-interface default
+	no passive-interface default
 exit
 int range g0/0
 	ip router isis
