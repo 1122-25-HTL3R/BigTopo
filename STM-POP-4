@@ -107,9 +107,10 @@ int lo1
 exit
 
 router ospf 100
+    router-id 10.7.7.104
     network 192.168.101.0 0.0.0.255 area 0   ! Tunnel-Netz 101
     network 192.168.102.0 0.0.0.255 area 0   ! Tunnel-Netz 101
-    # network 10.7.7.4 0.0.0.0 area 0          ! eigene Loopback na ned für BGP
+    ! # network 10.7.7.4 0.0.0.0 area 0          ! eigene Loopback na ned für BGP
     network 10.7.7.104 0.0.0.0 area 0        ! Loopback für BGP und L3VPN
 exit
 
