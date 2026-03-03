@@ -88,16 +88,16 @@ router ospf 100
 exit
 
 
-
-! -- VRFs --
-
-mpls ldp router-id Loopback0 force
-
-int tun101
+int tun102
     ip ospf network point-to-multipoint
     ip ospf 100 area 0
     mpls ip
 exit
+
+
+! -- VRFs --
+
+mpls ldp router-id Loopback0 force
     
 
 ip vrf VIE
@@ -134,13 +134,13 @@ router bgp 65007
     no bgp default ipv4-unicast
 
     neighbor 10.7.7.101 remote-as 65007
-    neighbor 10.7.7.101 update-source lo0
+    neighbor 10.7.7.101 update-source lo1
     neighbor 10.7.7.103 remote-as 65007
-    neighbor 10.7.7.103 update-source lo0
+    neighbor 10.7.7.103 update-source lo1
     neighbor 10.7.7.104 remote-as 65007
-    neighbor 10.7.7.104 update-source lo0
+    neighbor 10.7.7.104 update-source lo1
     neighbor 10.7.7.105 remote-as 65007
-    neighbor 10.7.7.105 update-source lo0
+    neighbor 10.7.7.105 update-source lo1
 
     address-family vpnv4
         neighbor 10.7.7.101 activate
