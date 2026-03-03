@@ -106,6 +106,12 @@ exit
 
 mpls ldp router-id Loopback1 force
 
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+! Ab hier jeweils ncoh nicht geconft weil ka tbh ob das so ok ist
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
 ip vrf VIE
     rd 65007:10
     route-target export 65007:10

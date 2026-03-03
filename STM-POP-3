@@ -97,11 +97,6 @@ int tun 102
 exit
 
 
-
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-! Ab hier jeweils ncoh nicht geconft weil ka tbh ob das so ok ist
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
 int lo1
     ip addr 10.7.7.103 255.255.255.255
 exit
@@ -125,6 +120,12 @@ exit
 int tun 102
     mpls ip
 exit
+
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+! Ab hier jeweils ncoh nicht geconft weil ka tbh ob das so ok ist
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
 
 ip vrf VIE
     rd 65007:10

@@ -74,10 +74,6 @@ int tun 102
 exit
 
 
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-! Ab hier jeweils ncoh nicht geconft weil ka tbh ob das so ok ist
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
 int lo1
     ip addr 10.7.7.102 255.255.255.255
 exit
@@ -91,6 +87,8 @@ router ospf 100
 exit
 
 
+! --- MPLS ---
+
 int tun102
     ip ospf network point-to-multipoint
     ip ospf 100 area 0
@@ -101,7 +99,12 @@ exit
 ! -- VRFs --
 
 mpls ldp router-id Loopback1 force
-    
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+! Ab hier jeweils ncoh nicht geconft weil ka tbh ob das so ok ist
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
 
 ip vrf VIE
     rd 65007:10
