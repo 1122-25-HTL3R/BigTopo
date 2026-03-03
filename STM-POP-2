@@ -41,8 +41,9 @@ exit
 ! IS-IS
 router isis
 	no passive-interface default
+    passive-interface lo0 ! lo0 ausnahme: advertise aber kein Hello
 exit
-int range g0/3
+int range g0/3,lo0
 	ip router isis
 exit
 router isis
@@ -59,15 +60,15 @@ do show clns neigh
 
 ! Hub 2
 int tun 102
-	no ip addr 192.168.102.1 255.255.255.0
-	no tun source lo0
-	no tun mode gre multipoint
+	ip addr 192.168.102.1 255.255.255.0
+	tun source lo0
+	tun mode gre multipoint
 
-	no ip nhrp authentication DMVPN
-	no ip nhrp network-id 102
-	no ip nhrp map multicast dynamic
+	ip nhrp authentication DMVPN
+	ip nhrp network-id 102
+	ip nhrp map multicast dynamic
 	
-	no ip ospf network point-to-multipoint	
+	ip ospf network point-to-multipoint	
 	
 	# later!!! tun protection ipsec profile DMVPN
 exit
