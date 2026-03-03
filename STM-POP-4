@@ -90,8 +90,8 @@ int tun 102
 	no ip nhrp network-id 102	
 	
 	! NHS Hub 1:
-	no ip nhrp map 192.168.102.1 10.7.7.1
-	no ip nhrp map multicast 10.7.7.1
+	no ip nhrp map 192.168.102.1 10.7.7.2
+	no ip nhrp map multicast 10.7.7.2
 	no ip nhrp nhs 192.168.102.1
 
 	no ip ospf priority 0
@@ -105,9 +105,15 @@ exit
 ! Ab hier jeweils ncoh nicht geconft weil ka tbh ob das so ok ist
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
+int lo1
+    ip addr 10.7.7.104 255.255.255.255
+exit
+
 router ospf 100
-    network 192.168.100.0 0.0.0.255 area 0   ! Tunnel-Netz
+    network 192.168.101.0 0.0.0.255 area 0   ! Tunnel-Netz 101
+    network 192.168.102.0 0.0.0.255 area 0   ! Tunnel-Netz 101
     network 10.7.7.4 0.0.0.0 area 0          ! eigene Loopback
+    network 10.7.7.104 0.0.0.0 area 0        ! Loopback für BGP und L3VPN
 exit
 
 
@@ -115,7 +121,10 @@ exit
 
 mpls ldp router-id Loopback0 force
 
-int tun 100
+int tun 101
+    mpls ip
+exit
+int tun 102
     mpls ip
 exit
 
@@ -151,24 +160,24 @@ router bgp 65007
     bgp router-id 10.7.7.4
     no bgp default ipv4-unicast
 
-    neighbor 10.7.7.1 remote-as 65007
-    neighbor 10.7.7.1 update-source lo0
-    neighbor 10.7.7.2 remote-as 65007
-    neighbor 10.7.7.2 update-source lo0
-    neighbor 10.7.7.3 remote-as 65007
-    neighbor 10.7.7.3 update-source lo0
-    neighbor 10.7.7.5 remote-as 65007
-    neighbor 10.7.7.5 update-source lo0
+    neighbor 10.7.7.101 remote-as 65007
+    neighbor 10.7.7.101 update-source lo0
+    neighbor 10.7.7.102 remote-as 65007
+    neighbor 10.7.7.102 update-source lo0
+    neighbor 10.7.7.103 remote-as 65007
+    neighbor 10.7.7.103 update-source lo0
+    neighbor 10.7.7.105 remote-as 65007
+    neighbor 10.7.7.105 update-source lo0
 
     address-family vpnv4
-        neighbor 10.7.7.1 activate
-        neighbor 10.7.7.1 send-community extended
-        neighbor 10.7.7.2 activate
-        neighbor 10.7.7.2 send-community extended
-        neighbor 10.7.7.3 activate
-        neighbor 10.7.7.3 send-community extended
-        neighbor 10.7.7.5 activate
-        neighbor 10.7.7.5 send-community extended
+        neighbor 10.7.7.101 activate
+        neighbor 10.7.7.101 send-community extended
+        neighbor 10.7.7.102 activate
+        neighbor 10.7.7.102 send-community extended
+        neighbor 10.7.7.103 activate
+        neighbor 10.7.7.103 send-community extended
+        neighbor 10.7.7.105 activate
+        neighbor 10.7.7.105 send-community extended
     exit-address-family
 
     address-family ipv4 vrf OOE

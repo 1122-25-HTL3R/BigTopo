@@ -76,9 +76,14 @@ int tun 101
 exit
 
 
+
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ! Ab hier jeweils ncoh nicht geconft weil ka tbh ob das so ok ist
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+int lo1
+    ip addr 10.7.7.101 255.255.255.255
+exit
 
 router ospf 100
     network 192.168.101.0 0.0.0.255 area 0   ! Tunnel-Netz
@@ -88,10 +93,11 @@ exit
 
 ! --- MPLS ---
 
-int tun 101
-	mpls ip
+int tun101
+    ip ospf network point-to-multipoint
+    ip ospf 100 area 0
+    mpls ip
 exit
-
 
 ! STM-POP-1:
 ip vrf PUBLIC
@@ -145,28 +151,28 @@ exit
 ! --- BGP ---
 
 router bgp 65007
-    bgp router-id 10.7.7.1
+    bgp router-id 10.7.7.101
     no bgp default ipv4-unicast
 
     ! iBGP PE-PE zu allen anderen STM-POP:
-    neighbor 10.7.7.2 remote-as 65007
-    neighbor 10.7.7.2 update-source lo0
-    neighbor 10.7.7.3 remote-as 65007
-    neighbor 10.7.7.3 update-source lo0
-    neighbor 10.7.7.4 remote-as 65007
-    neighbor 10.7.7.4 update-source lo0
-    neighbor 10.7.7.5 remote-as 65007
-    neighbor 10.7.7.5 update-source lo0
+    neighbor 10.7.7.102 remote-as 65007
+    neighbor 10.7.7.102 update-source lo0
+    neighbor 10.7.7.103 remote-as 65007
+    neighbor 10.7.7.103 update-source lo0
+    neighbor 10.7.7.104 remote-as 65007
+    neighbor 10.7.7.104 update-source lo0
+    neighbor 10.7.7.105 remote-as 65007
+    neighbor 10.7.7.105 update-source lo0
 
     address-family vpnv4
-        neighbor 10.7.7.2 activate
-        neighbor 10.7.7.2 send-community extended
-        neighbor 10.7.7.3 activate
-        neighbor 10.7.7.3 send-community extended
-        neighbor 10.7.7.4 activate
-        neighbor 10.7.7.4 send-community extended
-        neighbor 10.7.7.5 activate
-        neighbor 10.7.7.5 send-community extended
+        neighbor 10.7.7.102 activate
+        neighbor 10.7.7.102 send-community extended
+        neighbor 10.7.7.103 activate
+        neighbor 10.7.7.103 send-community extended
+        neighbor 10.7.7.104 activate
+        neighbor 10.7.7.104 send-community extended
+        neighbor 10.7.7.105 activate
+        neighbor 10.7.7.105 send-community extended
     exit-address-family
 
     ! eBGP PE-CE zu VIE-POP-4:

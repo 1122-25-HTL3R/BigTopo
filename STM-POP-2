@@ -77,9 +77,14 @@ exit
 ! Ab hier jeweils ncoh nicht geconft weil ka tbh ob das so ok ist
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
+int lo1
+    ip addr 10.7.7.102 255.255.255.255
+exit
+
 router ospf 100
     network 192.168.102.0 0.0.0.255 area 0   ! Tunnel-Netz
     network 10.7.7.2 0.0.0.0 area 0          ! eigene Loopback
+    network 10.7.7.102 0.0.0.0 area 0        ! Loopback für BGP und L3VPN
 exit
 
 
@@ -88,9 +93,12 @@ exit
 
 mpls ldp router-id Loopback0 force
 
-int tun 102
+int tun101
+    ip ospf network point-to-multipoint
+    ip ospf 100 area 0
     mpls ip
 exit
+    
 
 ip vrf VIE
     rd 65007:10
@@ -122,27 +130,27 @@ exit
 ! --- BGP ---
 
 router bgp 65007
-    bgp router-id 10.7.7.2
+    bgp router-id 10.7.7.102
     no bgp default ipv4-unicast
 
-    neighbor 10.7.7.1 remote-as 65007
-    neighbor 10.7.7.1 update-source lo0
-    neighbor 10.7.7.3 remote-as 65007
-    neighbor 10.7.7.3 update-source lo0
-    neighbor 10.7.7.4 remote-as 65007
-    neighbor 10.7.7.4 update-source lo0
-    neighbor 10.7.7.5 remote-as 65007
-    neighbor 10.7.7.5 update-source lo0
+    neighbor 10.7.7.101 remote-as 65007
+    neighbor 10.7.7.101 update-source lo0
+    neighbor 10.7.7.103 remote-as 65007
+    neighbor 10.7.7.103 update-source lo0
+    neighbor 10.7.7.104 remote-as 65007
+    neighbor 10.7.7.104 update-source lo0
+    neighbor 10.7.7.105 remote-as 65007
+    neighbor 10.7.7.105 update-source lo0
 
     address-family vpnv4
-        neighbor 10.7.7.1 activate
-        neighbor 10.7.7.1 send-community extended
-        neighbor 10.7.7.3 activate
-        neighbor 10.7.7.3 send-community extended
-        neighbor 10.7.7.4 activate
-        neighbor 10.7.7.4 send-community extended
-        neighbor 10.7.7.5 activate
-        neighbor 10.7.7.5 send-community extended
+        neighbor 10.7.7.101 activate
+        neighbor 10.7.7.101 send-community extended
+        neighbor 10.7.7.103 activate
+        neighbor 10.7.7.103 send-community extended
+        neighbor 10.7.7.104 activate
+        neighbor 10.7.7.104 send-community extended
+        neighbor 10.7.7.105 activate
+        neighbor 10.7.7.105 send-community extended
     exit-address-family
 
     address-family ipv4 vrf VIE
