@@ -44,6 +44,7 @@ router isis
 	no passive-interface default
     passive-interface lo0 ! lo0 ausnahme: advertise aber kein Hello
 exit
+
 int range g0/2,lo0
 	ip router isis
 exit
