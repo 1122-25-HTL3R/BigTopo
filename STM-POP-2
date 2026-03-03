@@ -58,32 +58,27 @@ do show clns neigh
 ! wir brauchen auf bieden hubs seperate DMVPN INstanz zu allen 3 Spokes und dann zwischen den hubs..? DOrt dann Phase 1
 
 ! Hub 2
-int tun 100
-	no ip addr 192.168.100.2 255.255.255.0
+int tun 102
+	no ip addr 192.168.102.1 255.255.255.0
 	no tun source lo0
 	no tun mode gre multipoint
 
 	no ip nhrp authentication DMVPN
-	no ip nhrp network-id 100
+	no ip nhrp network-id 102
 	no ip nhrp map multicast dynamic
 	
-	! Hub 2 registriert sich bei Hub 1:
-	no ip nhrp map 192.168.100.1 10.7.7.1
-	no ip nhrp map multicast 10.7.7.1
-	no ip nhrp nhs 192.168.100.1
-	
-
 	no ip ospf network point-to-multipoint	
 	
 	# later!!! tun protection ipsec profile DMVPN
 exit
+
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ! Ab hier jeweils ncoh nicht geconft weil ka tbh ob das so ok ist
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 router ospf 100
-    network 192.168.100.0 0.0.0.255 area 0   ! Tunnel-Netz
+    network 192.168.102.0 0.0.0.255 area 0   ! Tunnel-Netz
     network 10.7.7.2 0.0.0.0 area 0          ! eigene Loopback
 exit
 
@@ -93,7 +88,7 @@ exit
 
 mpls ldp router-id Loopback0 force
 
-int tun 100
+int tun 102
     mpls ip
 exit
 
