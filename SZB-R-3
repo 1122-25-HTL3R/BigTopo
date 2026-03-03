@@ -52,6 +52,7 @@ router ospf 1
 	router-id 10.8.8.3
 	network 10.8.0.4 0.0.0.3 area 1
 	network 10.8.0.8 0.0.0.3 area 1
+	network 10.7.0.16 0.0.0.3 area 1
 	passive-interface default
 	no passive-interface g0/1
 	no passive-interface g0/2
