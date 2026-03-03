@@ -131,7 +131,7 @@ exit
 
 ! -- VRFs --
 
-mpls ldp router-id Loopback0 force
+mpls ldp router-id Loopback1 force
 
 int tun 101
     mpls ip

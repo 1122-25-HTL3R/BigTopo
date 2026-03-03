@@ -102,7 +102,7 @@ exit
 
 ! -- VRFs --
 
-mpls ldp router-id Loopback0 force
+mpls ldp router-id Loopback1 force
 
 ip vrf VIE
     rd 65007:10
