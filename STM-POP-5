@@ -151,8 +151,6 @@ ip vrf ZWG
     route-target import 4:30
 exit
 
-
-
 int g0/1
     ip vrf forwarding OOE
     ip address 172.16.8.1 255.255.255.0
@@ -196,10 +194,13 @@ router bgp 4
         neighbor 172.16.8.2 activate
     exit-address-family
 
-    ! ZWG CE – eigene VRF, komplett isoliert von OOE:
+    ! ZWG CE ... eigene VRF, komplett isoliert von OOE:
     address-family ipv4 vrf ZWG
         neighbor 172.16.14.2 remote-as 65030
         neighbor 172.16.14.2 activate
     exit-address-family
 exit
 
+mpls ldp discovery targeted-hello accept
+mpls ldp neighbor 10.7.7.103 targeted
+mpls ldp neighbor 10.7.7.104 targeted

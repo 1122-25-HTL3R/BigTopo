@@ -186,3 +186,7 @@ router bgp 4
     exit-address-family
 exit
 
+mpls ldp discovery targeted-hello accept
+mpls ldp neighbor 10.7.7.104 targeted
+mpls ldp neighbor 10.7.7.105 targeted
+

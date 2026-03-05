@@ -28,3 +28,20 @@ description Connection to STM-POP-5
 ip address 172.16.8.2 255.255.255.0
 no shutdown
 exit
+
+
+router bgp 6
+    bgp router-id 172.16.8.2
+    neighbor 172.16.8.1 remote-as 4
+    
+    address-family ipv4
+        neighbor 172.16.8.1 activate
+        network 172.16.8.0 mask 255.255.255.0
+    exit-address-family
+exit
+
+router bgp 6
+    address-family ipv4
+        neighbor 172.16.8.1 allowas-in
+    exit-address-family
+exit

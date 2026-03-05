@@ -1,0 +1,66 @@
+## Troubleshooting-Dokumentation — MPLS L3VPN over DMVPN
+
+***
+
+### Problem 1 — LDP Router-ID auf Lo0 statt Lo1
+
+**Problem:** LDP verwendete Lo0 (`10.7.7.x`) als Router-ID, BGP peerte aber über Lo1 (`10.7.7.10x`). Dadurch verteilte LDP Labels für Lo0, BGP next-hop zeigte aber auf Lo1 → Label-Mismatch, VPN-Traffic nicht weiterleitbar.
+
+**Lösung:**
+```cisco
+mpls ldp router-id Loopback1 force
+```
+
+***
+
+### Problem 2 — BGP `update-source lo0` statt lo1
+
+**Problem:** BGP Neighbors waren mit Lo1-Adressen (`10.7.7.10x`) konfiguriert, aber `update-source lo0` gesetzt. BGP-Sessions kamen nicht hoch weil die Source-IP nicht zur Neighbor-IP passte.
+
+**Lösung:**
+```cisco
+neighbor 10.7.7.10x update-source Loopback1
+```
+
+***
+
+### Problem 3 — Lo0 nicht in IS-IS advertised
+
+**Problem:** Lo0 hatte kein `ip router isis` — dadurch waren die Tunnel-Source-IPs (`10.7.7.x`) im Underlay nicht erreichbar und die DMVPN-Tunnel kamen nicht hoch.
+
+**Lösung:**
+```cisco
+int lo0
+    ip router isis
+router isis
+    passive-interface lo0
+```
+
+***
+
+### Problem 4 — Keine LDP Sessions zwischen Spokes (Phase 1)
+
+**Problem:** In DMVPN Phase 1 gibt es keine direkten Spoke-zu-Spoke Tunnel. LDP baut Sessions nur über direkte Interface-Adjacencies auf — Spokes die nicht direkt verbunden sind (z.B. POP-3 ↔ POP-4) hatten keine LDP Session. VPN-Traffic zwischen diesen Spokes wurde nicht gelabelt und verworfen.
+
+**Lösung:** Targeted LDP Sessions zwischen allen Spoke-Paaren:
+```cisco
+mpls ldp discovery targeted-hello accept
+mpls ldp neighbor 10.7.7.103 targeted
+mpls ldp neighbor 10.7.7.105 targeted
+! (jeweilige Spoke-IPs anpassen)
+```
+
+***
+
+### Problem 5 — AS-PATH Loop bei mehreren CE-Sites derselben AS
+
+**Problem:** Alle OOE-Sites (AS 6) und alle VIE-Sites (AS 3) teilen dieselbe AS-Nummer. Wenn STM-POP-3 eine Route von OOE-POP-3 (AS 6) zu OOE-POP-2 (AS 6) weiterleitet, enthält der AS-Path `4 6`. OOE-POP-2 erkennt die eigene AS-Nummer und verwirft die Route als Loop — standardkonformes BGP-Verhalten, aber unerwünscht im L3VPN-Kontext.
+
+**Lösung:** `allowas-in` auf allen CE-Routern mit mehreren Sites:
+```cisco
+router bgp 6
+    address-family ipv4
+        neighbor 172.16.10.1 allowas-in
+    exit-address-family
+```
+Alternativ `as-override` auf dem PE möglich — `allowas-in` auf dem CE wurde bevorzugt da keine PE-Änderungen nötig.
