@@ -1,0 +1,107 @@
+en
+conf t
+
+hostname CME
+
+! no banner ...
+
+banner motd #Stop!#
+
+no ip domain-lookup
+
+username cisco algorithm-type scrypt secret cisco
+username cisco priv 15
+
+service password-encryption
+
+ip domain name BT-DAN-MAR
+crypto key generate rsa usage-keys modulus 2048
+ip ssh version 2
+
+line con 0
+  exec-timeout 0
+  login local
+  logg sync
+  exit
+
+line vty 0 15
+  exec-timeout 0
+  login local
+  logg sync
+  transport input all
+  exit
+
+
+int gig0/0
+no shut
+
+int gig0/0.40
+encapsulation dot1Q 40
+ip address 10.0.40.1 255.255.255.0
+no shutdown
+Exit
+
+ip dhcp pool VOICE_POOL
+network 10.0.40.0 255.255.255.0
+default-router 10.0.40.1
+option 150 ip 10.0.40.1
+
+!Firmware und Custom Klingelton von TFTP Server herunterladen
+!copy tftp://192.168.1.2/captain.wav flash:
+!copy tftp://192.168.1.2/ringlist.xml flash:
+!archive tar /xtract tftp://192.168.1.2/cmterm-7945_7965-sccp.9-2-1.tar flash:
+!archive tar /xtract tsuffix tftp://192.168.1.2/cmterm-7975-sccp.9-3-1.tar flash:
+
+!Firmware 7975
+tftp-server flash:apps75.9-3-1ES13.sbn
+tftp-server flash:cnu75.9-3-1ES13.sbn
+tftp-server flash:cvm75sccp.9-3-1ES13.sbn
+tftp-server flash:dsp75.9-3-1ES13.sbn
+tftp-server flash:jar75sccp.9-3-1ES13.sbn
+tftp-server flash:SCCP75.9-3-1SR2-1S.loads
+tftp-server flash:term75.default.loads
+
+!Firmware 7976
+tftp-server flash:apps45.9-2-1TH1-13.sbn
+tftp-server flash:cnu45.9-2-1TH1-13.sbn
+tftp-server flash:cvm45sccp.9-2-1TH1-13.sbn
+tftp-server flash:dsp45.9-2-1TH1-13.sbn
+tftp-server flash:jar45sccp.9-2-1TH1-13.sbn
+tftp-server flash:SCCP45.9-2-1S.loads
+tftp-server flash:term45.default.loads
+tftp-server flash:term65.default.loads
+
+!Custom Klingelton freigeben
+tftp-server flash:captain.wav
+tftp-server flash:ringlist.xml
+
+telephony-service
+max-ephone 10
+max-dn 10
+ip source-address 10.0.40.1 port 2000 any
+load 7965 SCCP45.9-2-1S
+load 7975 SCCP75.9-3-1SR2-1S
+no create cnf-file
+create cnf-files
+reset all
+
+ephone-dn 1
+number 1001
+label Zentrale (7975)
+
+ephone-dn 2
+number 1002
+label Buero_2 (7965)
+
+ephone 1
+mac-address F025.7278.3880
+type 7975
+button 1:1
+
+
+ephone 2
+mac-address DCCE.C1F0.7F70
+type 7965
+button 1:2
+
+
