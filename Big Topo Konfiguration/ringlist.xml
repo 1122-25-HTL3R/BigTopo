@@ -1,0 +1,6 @@
+<CiscoIPPhoneRingList>
+    <Ring>
+        <DisplayName>Star Trek Bridge</DisplayName>
+        <FileName>captain.wav</FileName>
+    </Ring>
+</CiscoIPPhoneRingList>

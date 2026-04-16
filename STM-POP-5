@@ -192,6 +192,7 @@ router bgp 4
     address-family ipv4 vrf OOE
         neighbor 172.16.8.2 remote-as 6
         neighbor 172.16.8.2 activate
+        network 172.16.8.0 mask 255.255.255.0
     exit-address-family
 
     ! ZWG CE ... eigene VRF, komplett isoliert von OOE:
